@@ -22,7 +22,6 @@ def save_from_source_1(num_of_pages, animal_name):
         page = urllib.request.urlopen(req).read()
         soup = BeautifulSoup(page, 'html.parser')
 
-        ar = []
         img_id = 0
         for img in soup.find_all('img'):
             src = img.get('src')
@@ -44,15 +43,11 @@ def save_from_source_2(num_of_pages, animal_name):
         page = urllib.request.urlopen(req).read()
         soup = BeautifulSoup(page, 'html.parser')
 
-        ar = []
         img_id = 0
         for img in soup.find_all('img'):
             src = img.get('src')
             if ('jpg' in src):
                 img_id += 1
-                #print(src)
-                #src = re.findall('[a-zA-Z_/:\-.0-9]+', src)
-                #if 'avatars' not in src[0]:
                 save_image_by_url(src, 'founded_images/' + animal_name, 'second_' + str(i) + '_' + str(img_id))
 
         print('page ' + str(i) + ' of ' + str(num_of_pages))
@@ -69,7 +64,6 @@ def save_from_source_3(num_of_pages, animal_name):
         soup = BeautifulSoup(page, 'html.parser')
 
         img_id = 0
-
         for img in soup.find_all('img'):
             img_id += 1
             try:
@@ -82,4 +76,5 @@ def save_from_source_3(num_of_pages, animal_name):
 
 
 if __name__ == '__main__':
+    #use your functions here
     #save_from_source_3(num_of_pages=20, animal_name='owl')
