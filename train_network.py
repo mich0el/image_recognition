@@ -1,15 +1,17 @@
 import numpy as np
-import keras
-from keras import backend as K
 from keras.models import Sequential
-from keras.layers import Activation
-from keras.layers.core import Dense, Flatten
-from keras.optimizers import Adam
-from keras.metrics import categorical_crossentropy
+from keras.models import load_model
+from keras.layers.core import Dense, Flatten, Dropout
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import *
 from matplotlib import pyplot as plt
+
+from keras.optimizers import Adam
+from keras.metrics import categorical_crossentropy
+from keras.layers import Activation
+import keras
+from keras import backend as K
 from sklearn.metrics import confusion_matrix
 import itertools
 
@@ -44,28 +46,49 @@ if __name__ == '__main__':
 
     imgs, labels = next(train_batches)
 
-    #plots(imgs, titles=labels)
-    #for l in labels:
-    #    print(l)
-
     model = Sequential([
         Conv2D(32, (3,3), activation='relu', input_shape=(256, 256, 3)),
+        MaxPooling2D(pool_size=(2,2)),
+        BatchNormalization(),
+
+        Conv2D(64, kernel_size=(3,3), activation='relu'),
+        MaxPooling2D(pool_size=(2,2)),
+        BatchNormalization(),
+
+        Conv2D(64, kernel_size=(3,3), activation='relu'),
+        MaxPooling2D(pool_size=(2,2)),
+        BatchNormalization(),
+
+        Conv2D(96, kernel_size=(3,3), activation='relu'),
+        MaxPooling2D(pool_size=(2,2)),
+        BatchNormalization(),
+
+        Conv2D(32, kernel_size=(3,3), activation='relu'),
+        MaxPooling2D(pool_size=(2,2)),
+        BatchNormalization(),
+        Dropout(0.2),
+
         Flatten(),
+        Dense(128, activation='relu'),
+        Dropout(0.3),
         Dense(2, activation='softmax')
     ])
 
-    model.compile(Adam(lr=.0001), loss='categorical_crossentropy', metrics=['accuracy'])
-
-    model.fit_generator(train_batches, steps_per_epoch=20, validation_data=valid_batches, validation_steps=4, epochs=5, verbose=2)
+    #model.compile(Adam(lr=.0001), loss='categorical_crossentropy', metrics=['accuracy'])
+    #model.fit_generator(train_batches, steps_per_epoch=20, validation_data=valid_batches, validation_steps=4, epochs=5, verbose=2)
+    #print('saving the model to h5 file...')
+    #model.save('model.h5')
 
     test_imgs, test_labels = next(test_batches)
-    test_labels = test_labels[:, 0]
 
+    del model
+
+    model = load_model('model.h5')
+
+    print('test labels:')
     print(test_labels)
 
-
     predictions = model.predict_generator(test_batches, steps=1, verbose=0)
-
-    print(predictions)
-
-    cm = confusion_matrix(test_labels, predictions[:, 0])
+    print('predictions:')
+    for el in predictions:
+        print("[0. 1.]" if el[0] < 0.5 else "[1. 0.]")
