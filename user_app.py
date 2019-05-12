@@ -7,9 +7,6 @@ from keras.preprocessing.image import ImageDataGenerator
 import shutil
 import os
 import cv2
-from PIL import Image
-import numpy as np
-from keras import utils
 import numpy
 
 
@@ -37,10 +34,9 @@ if __name__ == '__main__':
         messagebox.showerror("File error!", "Wrong file type (only JPG/JPEG acceptable).")
         sys.exit()
 
-
     recognize_batch = ImageDataGenerator().flow_from_directory("user_img/", target_size=(256, 256), classes=['bear', 'cat', 'dog', 'elephant', 'giraffe', 'gorilla', 'owl', 'parrot', 'penguin', 'zebra'], batch_size=1)
-    #imgs, labels = next(recognize_batch)
 
+    #names for result messagebox
     animal_strings = [
         'bear',
         'cat',
@@ -55,11 +51,9 @@ if __name__ == '__main__':
     ]
 
     predictions = model.predict_generator(recognize_batch, steps=1, verbose=1)
-    print(predictions)
-
-
-
     max_index = numpy.where(predictions == numpy.amax(predictions))
-    messagebox.showinfo("Result", "with probability = " + str(round(numpy.amax(predictions) * 100, 2)) + "% it is: " + animal_strings[int(max_index[1])])
 
+    messagebox.showinfo("Result", "With probability = " + str(round(numpy.amax(predictions) * 100, 2)) + "% it is: " + animal_strings[int(max_index[1])])
+
+    #removing temporary files and folders
     shutil.rmtree("./user_img/")

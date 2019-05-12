@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import re
 
 
+#resizing image to 256*256 and saving to "dir"
 def save_image_by_url(url, dir, name):
     req = urllib.request.Request(url=url, headers={'User-Agent': 'Chrome'})
     img_array = np.asarray(bytearray(urllib.request.urlopen(req).read()), dtype=np.uint8)
@@ -13,6 +14,7 @@ def save_image_by_url(url, dir, name):
     cv2.imwrite(dir + '/' + name + '.jpg', new_img)
 
 
+#source 1: pexels.com
 def save_from_source_1(num_of_pages, animal_name):
     headers = {'User-Agent': 'Chrome'}
 
@@ -34,6 +36,7 @@ def save_from_source_1(num_of_pages, animal_name):
         print('page ' + str(i) + ' of ' + str(num_of_pages))
 
 
+#source 2: pixabay.com
 def save_from_source_2(num_of_pages, animal_name):
     headers = {'User-Agent': 'Chrome'}
 
@@ -53,6 +56,7 @@ def save_from_source_2(num_of_pages, animal_name):
         print('page ' + str(i) + ' of ' + str(num_of_pages))
 
 
+#source 3: gettyimages.com
 def save_from_source_3(num_of_pages, animal_name):
     headers = {'User-Agent': 'Chrome'}
 
@@ -76,5 +80,6 @@ def save_from_source_3(num_of_pages, animal_name):
 
 
 if __name__ == '__main__':
-    #use your functions here
+    #use your functions here, for example:
     #save_from_source_3(num_of_pages=20, animal_name='owl')
+    #function will save your images to ./founded_images/animal_name/
